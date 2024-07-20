@@ -1,2 +1,1 @@
 save_interval = 30
-send_interval = 30

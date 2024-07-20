@@ -16,8 +16,3 @@ class Config:
                 if line and not line.startswith("#"):
                     key, value = map(str.strip, line.split('=', 1))
                     setattr(self, key, int(value))
-
-# Example usage
-if __name__ == "__main__":
-    config = Config('config.txt')
-    print(config.save_interval, config.send_interval)
