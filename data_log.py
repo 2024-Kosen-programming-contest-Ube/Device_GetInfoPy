@@ -50,4 +50,3 @@ class DataLogger:
         thread = threading.Thread(target=self.save_data_periodically)
         thread.daemon = True
         thread.start()
-

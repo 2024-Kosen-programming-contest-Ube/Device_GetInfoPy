@@ -5,7 +5,7 @@ from sensor import Sensor,setLEDColor
 
 def main():
     sensor=Sensor()
-    config = Config('/home/pi/GetInfo/config.txt')
+    config = Config('/home/pi/Device_GetInfoPy/config.txt')
     logger = DataLogger("/home/pi/GetInfo/datalog/data_log.txt", config.save_interval, config.send_interval)
     logger.start_periodic_saving()
     http_server.run_server()
