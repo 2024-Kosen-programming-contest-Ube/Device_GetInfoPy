@@ -25,11 +25,14 @@ class RequestHandler(BaseHTTPRequestHandler):
 
     def handle_getinfo_request(self):
         tempture , humidity = self.sensor.getEnviroment()
+        airconditioner , ontime = self.sensor.getAirConditioner()
         info = {
             "temperature": tempture,
             "humidity": humidity,
             "isPeople": self.sensor.getMotion(),
-            "lux":self.sensor.getLux()
+            "lux":self.sensor.getLux(),
+            "useairconditionaer":airconditioner,
+            "airconditionaertime":ontime
         }
         self.sensor.setBlinkLED(setLEDColor.PURPLE,3)
         self.send_response(200)
@@ -47,7 +50,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             self.wfile.write(b"Bad Request")
             return
 
-        filename = time.strftime("./datalog/%Y-%m-%d_data_log.txt", requested_time)
+        filename = time.strftime("/home/pi/Device_GetInfoPy/datalog/%Y-%m-%d_data_log.txt", requested_time)
         if not os.path.exists(filename):
             self.send_response(404)
             self.end_headers()
