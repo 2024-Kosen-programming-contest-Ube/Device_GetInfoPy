@@ -105,6 +105,9 @@ class Sensor:
     def getAirConditioner(self):
         current_time = time.time()
 
+        # 30分前のタイムスタンプを計算
+        time_30_min_ago = current_time - 1800  # 1800秒 = 30分
+
         # 日付部分を抽出してファイル名を生成
         date_str = time.strftime("%Y-%m-%d", time.localtime(current_time))
         filename = f"/home/pi/Device_GetInfoPy/datalog/{date_str}_data_log.txt"
@@ -139,8 +142,7 @@ class Sensor:
         latest_data = json.loads(data[-1])  # 最後のデータが最新
         latest_temp = latest_data["temperature"]
 
-        # 30分前のタイムスタンプを計算
-        time_30_min_ago = current_time - 1800  # 1800秒 = 30分
+        # 30分前のデータの位置を探す
         pos_30_min_ago = bisect.bisect_left(timestamps, time_30_min_ago)
 
         if pos_30_min_ago < len(timestamps):
@@ -152,8 +154,11 @@ class Sensor:
         temp_difference = latest_temp - temp_30_min_ago
 
         air_conditioner = temp_difference >= 1
-        
-        if(not air_conditioner):
-            pos_30_min_ago=0
 
-        return air_conditioner, pos_30_min_ago
+        if not air_conditioner:
+            pos_30_min_ago = 0
+
+        # 30分前の時間をYYYY-MM-DD-hh-mm-ssで返す
+        time_30_min_ago_str = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime(time_30_min_ago))
+
+        return air_conditioner, time_30_min_ago_str
