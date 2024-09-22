@@ -6,7 +6,7 @@ import threading
 import json
 import os
 import bisect
-
+import os
 class setLEDColor(Enum):
     OFF = [0, 0, 0]
     RED = [1, 0, 0]
@@ -107,11 +107,11 @@ class Sensor:
 
         # 30分前のタイムスタンプを計算
         time_30_min_ago = current_time - 1800  # 1800秒 = 30分
-
+        current_path = os.getcwd()
         # 日付部分を抽出してファイル名を生成
         date_str = time.strftime("%Y-%m-%d", time.localtime(current_time))
-        filename = f"/home/pi/Device_GetInfoPy/datalog/{date_str}_data_log.txt"
-        directory = "/home/pi/Device_GetInfoPy/datalog/"
+        filename = f"{current_path}/datalog/{date_str}_data_log.txt"
+        directory = f"{current_path}/datalog/"
 
         # ファイルが存在しない場合、最新のファイルを探す
         if not os.path.exists(filename):

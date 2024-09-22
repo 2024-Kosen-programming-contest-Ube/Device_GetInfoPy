@@ -56,8 +56,8 @@ class RequestHandler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(b"Bad Request")
             return
-
-        filename = time.strftime("/home/pi/Device_GetInfoPy/datalog/%Y-%m-%d_data_log.txt", requested_time)
+        current_path = os.getcwd()
+        filename = time.strftime(f"{current_path}/datalog/%Y-%m-%d_data_log.txt", requested_time)
         if not os.path.exists(filename):
             self.send_response(404)
             self.end_headers()
