@@ -16,17 +16,24 @@ class DataLogger:
         schedule.every(self.save_interval).seconds.do(self.save_data_periodically)
 
     def get_current_log_filename(self):
-        return os.path.join("/home/pi/Device_GetInfoPy", time.strftime("datalog/%Y-%m-%d_data_log.txt"))
+        # Ensure that the directory path is constructed correctly
+        current_path = os.getcwd()
+        log_directory = os.path.join(current_path, "datalog")
+        log_file = time.strftime("%Y-%m-%d_data_log.txt")
+        return os.path.join(log_directory, log_file)
 
     def save_to_file(self, data):
-        print("do")
         try:
             filename = self.get_current_log_filename()
-            print(f"Saving to file: {filename}")
             directory = os.path.dirname(filename)
-            print(f"Creating directory: {directory}")
+
+            # Debugging prints to verify directory and filename
+            print(f"Saving to file: {filename}")
+            print(f"Directory: {directory}")
+
+            # Ensure the directory exists
             os.makedirs(directory, exist_ok=True)
-            print(f"Directory created or exists: {directory}")
+
             with open(filename, "a") as file:
                 time_str = time.strftime("%Y-%m-%d-%H:%M:%S")
                 file.write(f"{time_str} {json.dumps(data)}\n")
@@ -35,15 +42,15 @@ class DataLogger:
 
     def save_data_periodically(self):
         try:
-            tempture , humidity = self.sensor.getEnviroment()
-            airconditioner , ontime = self.sensor.getAirConditioner()
+            temperature, humidity = self.sensor.getEnviroment()
+            airconditioner, ontime = self.sensor.getAirConditioner()
             data = {
-                "temperature": tempture,
+                "temperature": temperature,
                 "humidity": humidity,
                 "isPeople": self.sensor.getMotion(),
-                "lux":self.sensor.getLux(),
-                "useairconditionaer":airconditioner,
-                "airconditionaertime":ontime
+                "lux": self.sensor.getLux(),
+                "useairconditioner": airconditioner,
+                "airconditioner_time": ontime
             }
             self.sensor.setBlinkLED(setLEDColor.YELLOW, int(5))
             self.save_to_file(data)
