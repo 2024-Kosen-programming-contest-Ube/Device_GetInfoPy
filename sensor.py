@@ -129,14 +129,29 @@ class Sensor:
         with open(filename, "r") as file:
             lines = file.readlines()
 
+        # ファイルが空の場合の対処
+        if not lines:
+            print(f"ファイル {filename} にデータがありません。デフォルト値を返します。")
+            # デフォルト値として False と現在時刻を返す
+            return False, time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime(current_time))
+
         timestamps = []
         data = []
         for line in lines:
-            log_time_str, log_data = line.split(" ", 1)
-            log_time = time.strptime(log_time_str, "%Y-%m-%d-%H:%M:%S")
-            log_timestamp = time.mktime(log_time)
-            timestamps.append(log_timestamp)
-            data.append(log_data)
+            try:
+                log_time_str, log_data = line.split(" ", 1)
+                log_time = time.strptime(log_time_str, "%Y-%m-%d-%H:%M:%S")
+                log_timestamp = time.mktime(log_time)
+                timestamps.append(log_timestamp)
+                data.append(log_data)
+            except Exception as e:
+                print(f"ログデータの解析中にエラーが発生しました: {e}")
+                continue  # エラーがあっても他の行を処理し続ける
+
+        # データが空でないか確認
+        if not data:
+            print("有効なデータがありません。デフォルト値を返します。")
+            return False, time.strftime("%Y-%m-%d-%H-%M-%S", pos_30_min_ago)
 
         # 最新のデータを取得
         latest_data = json.loads(data[-1])  # 最後のデータが最新
@@ -162,3 +177,4 @@ class Sensor:
         time_30_min_ago_str = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime(time_30_min_ago))
 
         return air_conditioner, time_30_min_ago_str
+

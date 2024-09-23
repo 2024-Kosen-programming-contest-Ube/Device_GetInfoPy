@@ -42,8 +42,14 @@ class DataLogger:
 
     def save_data_periodically(self):
         try:
-            temperature, humidity = self.sensor.getEnviroment()
-            airconditioner, ontime = self.sensor.getAirConditioner()
+            env_data = self.sensor.getEnviroment()
+            print(f"Environment data: {env_data}")  # デバッグ用
+
+            # エアコンデータの取得を確認
+            air_data = self.sensor.getAirConditioner()
+            print(f"Air conditioner data: {air_data}")  # デバッグ用
+            temperature, humidity = env_data
+            airconditioner, ontime = air_data
             data = {
                 "temperature": temperature,
                 "humidity": humidity,
